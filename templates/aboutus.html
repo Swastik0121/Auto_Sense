@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us</title>
+  <link href="{{ url_for('static', filename='aboutus.css') }}" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+  <div class='Navbar'>
+    <div class="App">
+      <nav id="navbar">
+        <div class="nav-wrapper">
+          <div class="logo">
+            <a href="index.html"><i class="fas fa-chess-knight"></i>ROADSTERS</a>
+          </div>
+          <ul id="menu">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('about') }}">About</a></li>
+          </ul>
+        </div>
+
+      </nav>
+    </div>
+  </div>
+  <section class="about-us">
+    <div class="container">
+      <h2>About Us</h2>
+      <div class="about-content">
+        <div class="about-text">
+          <p>We are a team of passionate individuals who are dedicated to providing high-quality products and services
+            to our customers. Our mission is to exceed our customers' expectations by delivering exceptional value,
+            service, and support.</p>
+          <ul>
+            <li><strong>Founded:</strong> 2023</li>
+            <li><strong>Headquarters:</strong> Bhatan Pada, Panvel</li>
+            <li><strong>Number of members:</strong> 5</li>
+          </ul>
+          <a href="https://oceanic-maxilla-8a8.notion.site/SRS-DOCUMENT-c74380e56938498fbe80718c58b3c5ec"
+            class="button">Our SRS Documentation</a>
+        </div>
+        <div class="about-image">
+          <img src="/static/hanumanhorde.jpeg" alt="About Us Image">
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+</body>
+
+</html>

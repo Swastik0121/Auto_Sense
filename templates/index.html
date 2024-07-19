@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadstinger</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="{{ url_for('static', filename='main.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+
+
+    <div class='Navbar'>
+        <div class="App">
+            <nav id="navbar" class="">
+                <div class="nav-wrapper">
+
+                    <div class="logo">
+                        <a href="#home"><i class="fas fa-chess-knight"></i>RoadSTERS</a>
+                    </div>
+
+
+                    <ul id="menu">
+                        <li><a href="{{ url_for('home') }}">Home</a></li>
+                        <li><a href="{{ url_for('about') }}">About</a></li>
+                    </ul>
+                </div>
+
+            </nav>
+
+
+            <div class="menuIcon">
+                <span class="icon icon-bars"></span>
+                <span class="icon icon-bars overlay"></span>
+            </div>
+
+            <div class='GlassMorphism1'>
+
+                <div>
+                    <form id="image-form" method="post" enctype="multipart/form-data">
+                        <label class="label2" for="image-file">Choose File</label>
+                        <input type="file" class="upload" id="image-file" name="image" accept="image/*" />
+                        <button type="submit" class="label2">Upload File</button>
+                        
+                    </form>
+                </div>
+                <div id="result" class="input-screen">
+                </div>
+            </div>
+            <div class='GlassMorphism2'>
+                <div class="out">Output Here</a>
+                </div>
+
+                <!-- Output screen here-->
+                <div id="resout" class="Output-screen">
+                </div>
+
+            </div>
+
+            <!--Map Work in this div-->
+            <div class="map" id="map">
+
+            </div>
+
+            <div class="form-container">
+                <form>
+                    <label for="longitude">Longitude:</label>
+                    <input type="text" id="longitude" name="longitude" placeholder="73.1202">
+
+                    <label for="latitude">Latitude:</label>
+                    <input type="text" id="latitude" name="latitude" placeholder="19.0016">
+
+                    <button type="button" onclick="processCoordinates()">SEARCH</button>
+                </form>
+            </div>
+
+
+            <button onclick="takeScreenshot()" id="screenshot-button">Take Screenshot</button>
+
+
+
+            <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCxAKgT6A-zIc1W87HmfR_iH_9cLhgTRgE&callback=initMap"></script>
+
+
+
+            <script type="text/javascript" src="{{ url_for('static', filename='html2canvas.js') }}"></script>
+            <script>
+
+                function getLatLong() {
+                    // Get the values of the latitude and longitude input fields
+                    const latitude = document.getElementById('latitude').value;
+                    const longitude = document.getElementById('longitude').value;
+
+                    // Insert the latitude and longitude values into new variables
+                    const newLatitude = parseFloat(latitude);
+                    const newLongitude = parseFloat(longitude);
+
+                    // Do something with the new latitude and longitude values
+                    console.log(`New latitude: ${newLatitude}, New longitude: ${newLongitude}`);
+
+                }
+
+                // Capture screenshot function
+                function takeScreenshot() {
+                    // Use html2canvas library to capture the screenshot of the entire document
+                    html2canvas(document.body).then(function (canvas) {
+                        // Create a temporary anchor element to download the screenshot
+                        var link = document.createElement('a');
+                        link.download = 'screenshot.png';
+                        link.href = canvas.toDataURL();
+                        // Trigger the download by programmatically clicking the anchor element
+                        link.click();
+                    });
+                }
+
+                // Add click event listener to the screenshot button
+                var screenshotButton = document.getElementById('screenshot-button');
+                screenshotButton.addEventListener('click', takeScreenshot);
+
+
+                // Add click event listener to the screenshot button
+                var screenshotButton = document.getElementById('screenshot-button');
+                screenshotButton.addEventListener('click', takeScreenshot);
+
+
+
+                function processCoordinates() {
+                    const latitude = document.getElementById("latitude").value;
+                    const longitude = document.getElementById("longitude").value;
+                    showMap(latitude, longitude);
+                }
+
+                function showMap(latitude, longitude) {
+                    const mapOptions = {
+                        center: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
+                        zoom: 13,
+                        mapTypeId: google.maps.MapTypeId.SATELLITE,
+                    };
+                    const map = new google.maps.Map(document.getElementById("map"), mapOptions);
+                    const marker = new google.maps.Marker({ position: { lat: parseFloat(latitude), lng: parseFloat(longitude) }, map: map });
+                }
+
+                window.onload = function () {
+                    const defaultLatitude = 19.0760;
+                    const defaultLongitude = 72.8777;
+                    const defaultCenter = new google.maps.LatLng(defaultLatitude, defaultLongitude);
+                    const mapOptions = {
+                        zoom: 13,
+                        center: defaultCenter,
+                        mapTypeId: google.maps.MapTypeId.SATELLITE,
+                    };
+                    map = new google.maps.Map(document.getElementById("map"), mapOptions);
+                    const marker = new google.maps.Marker({ position: defaultCenter, map: map });
+                };
+                const form = document.getElementById('image-form');
+                const imageInput = document.getElementById('image-file');
+                const resultDiv = document.getElementById('resout');
+
+                form.addEventListener('submit', event => {
+                    event.preventDefault();
+
+                    const file = imageInput.files[0];
+                    const formData = new FormData();
+                    formData.append('image', file, file.name);
+
+                    fetch('/predict', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                           
+                            const value = data.value;
+                            if (value == 1) {
+                                
+                                document.querySelector("#resout").style.backgroundImage = "url('/static/books.png')";
+                            }
+                            
+
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    
+                        
+                        
+                });
+                var uploaded_image = " ";
+                
+                imageInput.addEventListener("change", function () {
+                    const reader = new FileReader();
+                    reader.addEventListener("load", () => {
+                        uploaded_image = reader.result;
+                        document.querySelector("#result").style.backgroundImage = `url(${uploaded_image})`;
+
+                    });
+                    reader.readAsDataURL(this.files[0]);
+                })    
+            </script>
+
+</body>
+
+</html>
